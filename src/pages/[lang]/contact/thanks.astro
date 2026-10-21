@@ -1,0 +1,17 @@
+---
+// Shown after a successful Netlify form submission.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { localePath } from '../../../i18n/paths';
+import { langPaths } from '../../../i18n/static-paths';
+import { t, type Lang } from '../../../i18n/ui';
+
+export const getStaticPaths = langPaths;
+
+const lang = Astro.params.lang as Lang;
+---
+
+<BaseLayout lang={lang} title={t(lang, 'thanks.title')} description={t(lang, 'thanks.body')}>
+  <h1 class="text-3xl font-bold text-zinc-900 dark:text-zinc-100">{t(lang, 'thanks.title')}</h1>
+  <p class="mt-4 text-zinc-600 dark:text-zinc-400">{t(lang, 'thanks.body')}</p>
+  <a href={localePath(lang)} class="mt-6 inline-block text-sm underline underline-offset-4">{t(lang, 'thanks.back')}</a>
+</BaseLayout>

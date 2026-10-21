@@ -1,0 +1,52 @@
+---
+// Home: hero, Services, featured Projects, contact call-to-action.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import ServiceList from '../../components/ServiceList.astro';
+import { getAbout, getProjects, getServices } from '../../lib/content';
+import { localePath } from '../../i18n/paths';
+import { langPaths } from '../../i18n/static-paths';
+import { t, type Lang } from '../../i18n/ui';
+
+export const getStaticPaths = langPaths;
+
+const lang = Astro.params.lang as Lang;
+const about = await getAbout(lang);
+const services = await getServices(lang);
+const featured = (await getProjects(lang)).filter((p) => p.data.featured);
+const heading = 'text-xl font-semibold text-zinc-900 dark:text-zinc-100';
+---
+
+<BaseLayout lang={lang} description={about.data.headline}>
+  <section class="py-8">
+    <h1 class="text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl dark:text-zinc-100">{about.data.name}</h1>
+    <p class="mt-4 max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">{about.data.headline}</p>
+  </section>
+
+  <section class="mt-12">
+    <h2 class={heading}>{t(lang, 'home.services')}</h2>
+    <div class="mt-6"><ServiceList lang={lang} services={services} /></div>
+  </section>
+
+  <section class="mt-16">
+    <div class="flex items-baseline justify-between">
+      <h2 class={heading}>{t(lang, 'home.featured')}</h2>
+      <a href={localePath(lang, 'projects')} class="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+        {t(lang, 'home.allProjects')} →
+      </a>
+    </div>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2">
+      {featured.map((project) => <ProjectCard lang={lang} project={project} />)}
+    </div>
+  </section>
+
+  <section class="mt-16 rounded-2xl bg-zinc-100 p-8 text-center dark:bg-zinc-900">
+    <h2 class={heading}>{t(lang, 'home.cta.title')}</h2>
+    <a
+      href={localePath(lang, 'contact')}
+      class="mt-4 inline-block rounded-md bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+    >
+      {t(lang, 'home.cta.button')}
+    </a>
+  </section>
+</BaseLayout>

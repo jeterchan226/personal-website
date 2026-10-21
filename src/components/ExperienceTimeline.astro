@@ -1,0 +1,51 @@
+---
+// About page timeline: Experiences newest first, each with links to its Projects.
+import { slugOf, type Experience, type Project } from '../lib/content';
+import { formatPeriod } from '../i18n/format';
+import { localePath } from '../i18n/paths';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  experiences: Experience[];
+  projects: Project[];
+}
+
+const { lang, experiences, projects } = Astro.props;
+const projectsOf = (experience: Experience) => projects.filter((p) => p.data.experience === slugOf(experience));
+---
+
+<ol class="relative border-l border-zinc-200 dark:border-zinc-800">
+  {
+    experiences.map((experience) => {
+      const { organization, title, startDate, endDate, location, description } = experience.data;
+      return (
+        <li class="mb-10 ml-6 last:mb-0">
+          <span class="absolute -left-1.5 mt-1.5 size-3 rounded-full border border-white bg-zinc-400 dark:border-zinc-950 dark:bg-zinc-600" />
+          <p class="text-xs text-zinc-500">
+            {formatPeriod(lang, startDate, endDate)}
+            {location && ` · ${location}`}
+          </p>
+          <h3 class="mt-1 font-semibold text-zinc-900 dark:text-zinc-100">
+            {title} · {organization}
+          </h3>
+          <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{description}</p>
+          {projectsOf(experience).length > 0 && (
+            <ul class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+              {projectsOf(experience).map((project) => (
+                <li>
+                  <a
+                    href={localePath(lang, 'projects', slugOf(project))}
+                    class="text-zinc-700 underline decoration-zinc-300 underline-offset-4 hover:decoration-zinc-700 dark:text-zinc-300 dark:decoration-zinc-600"
+                  >
+                    {project.data.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      );
+    })
+  }
+</ol>

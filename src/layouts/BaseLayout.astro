@@ -1,0 +1,71 @@
+---
+// Page shell used by every page: <head> (SEO, hreflang, theme, analytics), header and footer.
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { HTML_LANG, LANGS, type Lang } from '../i18n/ui';
+import { switchLang } from '../i18n/paths';
+import { SITE } from '../config/site';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description: string;
+}
+
+const { lang, title, description } = Astro.props;
+const pageTitle = title ? `${title} | ${SITE.name}` : SITE.name;
+const pathname = Astro.url.pathname;
+const alternate = (target: Lang) => new URL(switchLang(pathname, target), Astro.site).href;
+const analyticsToken = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN;
+---
+
+<!doctype html>
+<html lang={HTML_LANG[lang]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href={new URL(pathname, Astro.site).href} />
+    {LANGS.map((l) => <link rel="alternate" hreflang={HTML_LANG[l]} href={alternate(l)} />)}
+    <link rel="alternate" hreflang="x-default" href={alternate('zh-tw')} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+    />
+    <!-- Runs before first paint so a saved or system dark theme never flashes light. -->
+    <script is:inline>
+      (() => {
+        let saved = null;
+        try {
+          saved = localStorage.getItem('theme');
+        } catch {}
+        const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      })();
+    </script>
+    {
+      analyticsToken && (
+        <script
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: analyticsToken })}
+        />
+      )
+    }
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <Header lang={lang} />
+    <main class="mx-auto w-full max-w-4xl flex-1 px-4 py-12 sm:px-6">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

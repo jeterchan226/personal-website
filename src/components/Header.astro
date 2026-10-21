@@ -1,0 +1,50 @@
+---
+// Top navigation: page links, language switch, theme toggle.
+import ThemeToggle from './ThemeToggle';
+import { LANGS, LANG_LABEL, t, type Lang } from '../i18n/ui';
+import { localePath, switchLang } from '../i18n/paths';
+import { SITE } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const pathname = Astro.url.pathname;
+const links = [
+  { href: localePath(lang, 'projects'), label: t(lang, 'nav.projects') },
+  { href: localePath(lang, 'about'), label: t(lang, 'nav.about') },
+  { href: localePath(lang, 'contact'), label: t(lang, 'nav.contact') },
+];
+const isCurrent = (href: string) => pathname.startsWith(href);
+const otherLang = LANGS.find((l) => l !== lang)!;
+---
+
+<header class="border-b border-zinc-200 dark:border-zinc-800">
+  <nav class="mx-auto flex max-w-4xl items-center gap-4 px-4 py-4 sm:px-6">
+    <a href={localePath(lang)} class="mr-auto font-semibold text-zinc-900 dark:text-zinc-100">{SITE.name}</a>
+    <ul class="flex gap-4 text-sm">
+      {
+        links.map(({ href, label }) => (
+          <li>
+            <a
+              href={href}
+              aria-current={isCurrent(href) ? 'page' : undefined}
+              class="text-zinc-600 hover:text-zinc-900 aria-[current=page]:font-semibold aria-[current=page]:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 dark:aria-[current=page]:text-zinc-100"
+            >
+              {label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a
+      href={switchLang(pathname, otherLang)}
+      hreflang={otherLang}
+      class="rounded-md border border-zinc-300 px-2 py-1 text-xs text-zinc-600 hover:border-zinc-500 dark:border-zinc-700 dark:text-zinc-400"
+    >
+      {LANG_LABEL[otherLang]}
+    </a>
+    <ThemeToggle client:load label={t(lang, 'theme.toggle')} />
+  </nav>
+</header>

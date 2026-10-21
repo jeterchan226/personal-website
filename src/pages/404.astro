@@ -1,0 +1,24 @@
+---
+// Netlify serves dist/404.html for unknown paths; bilingual since the language is unknown.
+import { LANGS, LANG_LABEL, t } from '../i18n/ui';
+import { localePath } from '../i18n/paths';
+import { SITE } from '../config/site';
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>404 | {SITE.name}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body class="flex min-h-screen flex-col items-center justify-center gap-4 text-center">
+    <h1 class="text-2xl font-bold">404</h1>
+    {LANGS.map((lang) => <p>{t(lang, 'notFound.title')}</p>)}
+    <div class="flex gap-6">
+      {LANGS.map((lang) => <a class="underline underline-offset-4" href={localePath(lang)}>{LANG_LABEL[lang]}</a>)}
+    </div>
+  </body>
+</html>

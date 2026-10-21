@@ -1,0 +1,25 @@
+---
+// Projects list, newest first, with the Tech filter island.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProjectCard from '../../../components/ProjectCard.astro';
+import TechFilter from '../../../components/TechFilter';
+import { getProjects, techsOf } from '../../../lib/content';
+import { langPaths } from '../../../i18n/static-paths';
+import { t, type Lang } from '../../../i18n/ui';
+
+export const getStaticPaths = langPaths;
+
+const lang = Astro.params.lang as Lang;
+const projects = await getProjects(lang);
+---
+
+<BaseLayout lang={lang} title={t(lang, 'projects.title')} description={t(lang, 'projects.description')}>
+  <h1 class="text-3xl font-bold text-zinc-900 dark:text-zinc-100">{t(lang, 'projects.title')}</h1>
+  <p class="mt-2 text-zinc-600 dark:text-zinc-400">{t(lang, 'projects.description')}</p>
+  <div class="mt-8">
+    <TechFilter client:load techs={techsOf(projects)} allLabel={t(lang, 'projects.filter.all')} />
+  </div>
+  <div class="mt-6 grid gap-4 sm:grid-cols-2">
+    {projects.map((project) => <ProjectCard lang={lang} project={project} />)}
+  </div>
+</BaseLayout>

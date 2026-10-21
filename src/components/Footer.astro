@@ -1,0 +1,16 @@
+---
+// Site footer: copyright and social links.
+import { SITE } from '../config/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-zinc-200 dark:border-zinc-800">
+  <div class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-4 px-4 py-6 text-sm text-zinc-500 sm:px-6">
+    <p>© {year} {SITE.name}</p>
+    <ul class="flex gap-4">
+      <li><a class="hover:text-zinc-900 dark:hover:text-zinc-100" href={`mailto:${SITE.email}`}>Email</a></li>
+      <li><a class="hover:text-zinc-900 dark:hover:text-zinc-100" href={SITE.linkedin}>LinkedIn</a></li>
+      <li><a class="hover:text-zinc-900 dark:hover:text-zinc-100" href={SITE.github}>GitHub</a></li>
+    </ul>
+  </div>
+</footer>

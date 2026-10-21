@@ -1,0 +1,58 @@
+---
+// Contact form handled by Netlify Forms (no JavaScript, no backend).
+// Netlify finds the form in the built HTML via `data-netlify`; the hidden `bot-field`
+// is a honeypot — submissions that fill it are dropped as spam.
+import { localePath } from '../i18n/paths';
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const field =
+  'mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:focus:border-zinc-300';
+const types = [
+  { value: 'job', label: t(lang, 'contact.type.job') },
+  { value: 'collaboration', label: t(lang, 'contact.type.collab') },
+  { value: 'other', label: t(lang, 'contact.type.other') },
+];
+---
+
+<form
+  name="contact"
+  method="POST"
+  action={localePath(lang, 'contact', 'thanks')}
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  class="flex flex-col gap-4"
+>
+  <input type="hidden" name="form-name" value="contact" />
+  <p class="hidden">
+    <label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+  </p>
+  <label class="text-sm font-medium">
+    {t(lang, 'contact.name')}
+    <input class={field} type="text" name="name" required autocomplete="name" />
+  </label>
+  <label class="text-sm font-medium">
+    {t(lang, 'contact.email')}
+    <input class={field} type="email" name="email" required autocomplete="email" />
+  </label>
+  <label class="text-sm font-medium">
+    {t(lang, 'contact.type')}
+    <select class={field} name="type" required>
+      {types.map(({ value, label }) => <option value={value}>{label}</option>)}
+    </select>
+  </label>
+  <label class="text-sm font-medium">
+    {t(lang, 'contact.message')}
+    <textarea class={field} name="message" rows="6" required></textarea>
+  </label>
+  <button
+    type="submit"
+    class="w-fit rounded-md bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+  >
+    {t(lang, 'contact.submit')}
+  </button>
+</form>

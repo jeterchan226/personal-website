@@ -1,0 +1,18 @@
+---
+// Small pill list of Tech labels.
+interface Props {
+  tech: string[];
+}
+
+const { tech } = Astro.props;
+---
+
+<ul class="flex flex-wrap gap-1.5">
+  {
+    tech.map((name) => (
+      <li class="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+        {name}
+      </li>
+    ))
+  }
+</ul>

@@ -1,0 +1,3 @@
+# Send visitors at the root to their language. `!` forces the redirect even though dist/index.html exists.
+/  /en/     302!  Language=en
+/  /zh-tw/  302!

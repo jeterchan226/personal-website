@@ -1,0 +1,38 @@
+---
+// Home page Service section: each Service with links to the Projects that back it up.
+import { getProjects, slugOf, type Service } from '../lib/content';
+import { localePath } from '../i18n/paths';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  services: Service[];
+}
+
+const { lang, services } = Astro.props;
+const projects = await getProjects(lang);
+const titleOf = (slug: string) => projects.find((p) => slugOf(p) === slug)?.data.title ?? slug;
+---
+
+<ul class="grid gap-4 sm:grid-cols-2">
+  {
+    services.map((service) => (
+      <li class="rounded-xl border border-zinc-200 p-5 dark:border-zinc-800">
+        <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">{service.data.title}</h3>
+        <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{service.data.description}</p>
+        <ul class="mt-3 flex flex-col gap-1 text-sm">
+          {service.data.projects.map((slug) => (
+            <li>
+              <a
+                href={localePath(lang, 'projects', slug)}
+                class="text-zinc-700 underline decoration-zinc-300 underline-offset-4 hover:decoration-zinc-700 dark:text-zinc-300 dark:decoration-zinc-600"
+              >
+                {titleOf(slug)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </li>
+    ))
+  }
+</ul>

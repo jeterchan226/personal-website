@@ -1,0 +1,21 @@
+---
+// Fallback for `/`. On Netlify, public/_redirects sends visitors to /en/ or /zh-tw/ before this
+// page is ever served; it only shows up in local dev and preview.
+import { LANGS, LANG_LABEL } from '../i18n/ui';
+import { localePath } from '../i18n/paths';
+import { SITE } from '../config/site';
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{SITE.name}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body class="flex min-h-screen items-center justify-center gap-6">
+    {LANGS.map((lang) => <a class="text-lg underline underline-offset-4" href={localePath(lang)}>{LANG_LABEL[lang]}</a>)}
+  </body>
+</html>

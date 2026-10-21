@@ -1,0 +1,41 @@
+---
+// About: photo, self-introduction, Experience timeline, résumé download.
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ExperienceTimeline from '../../components/ExperienceTimeline.astro';
+import { getAbout, getExperiences, getProjects } from '../../lib/content';
+import { langPaths } from '../../i18n/static-paths';
+import { t, type Lang } from '../../i18n/ui';
+
+export const getStaticPaths = langPaths;
+
+const lang = Astro.params.lang as Lang;
+const about = await getAbout(lang);
+const experiences = await getExperiences(lang);
+const projects = await getProjects(lang);
+const { Content } = await render(about);
+---
+
+<BaseLayout lang={lang} title={t(lang, 'about.title')} description={about.data.headline}>
+  <section class="flex flex-col gap-8 sm:flex-row sm:items-start">
+    <Image src={about.data.photo} alt={about.data.photoAlt} width={192} height={192} class="size-48 shrink-0 rounded-2xl object-cover" />
+    <div>
+      <h1 class="text-3xl font-bold text-zinc-900 dark:text-zinc-100">{about.data.name}</h1>
+      <p class="mt-2 text-zinc-600 dark:text-zinc-400">{about.data.headline}</p>
+      <div class="prose prose-zinc mt-4 dark:prose-invert"><Content /></div>
+      <a
+        href={`/resume/resume-${lang}.pdf`}
+        download
+        class="mt-6 inline-block rounded-md bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+      >
+        {t(lang, 'about.resume')}
+      </a>
+    </div>
+  </section>
+
+  <section class="mt-16">
+    <h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">{t(lang, 'about.experience')}</h2>
+    <div class="mt-6"><ExperienceTimeline lang={lang} experiences={experiences} projects={projects} /></div>
+  </section>
+</BaseLayout>

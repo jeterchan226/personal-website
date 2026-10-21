@@ -1,0 +1,106 @@
+---
+// Project detail page. Confidential Projects show the client industry instead of a name and no links.
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TechTags from '../../../components/TechTags.astro';
+import { getExperience, getProjects, slugOf, type Project } from '../../../lib/content';
+import { formatPeriod } from '../../../i18n/format';
+import { localePath } from '../../../i18n/paths';
+import { LANGS, t, type Lang } from '../../../i18n/ui';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of LANGS) {
+    for (const project of await getProjects(lang)) {
+      paths.push({ params: { lang, slug: slugOf(project) }, props: { project } });
+    }
+  }
+  return paths;
+}
+
+const lang = Astro.params.lang as Lang;
+const { project } = Astro.props as { project: Project };
+const { title, summary, startDate, endDate, role, tech, outcomes, confidential, clientIndustry, experience, github, demo, cover } =
+  project.data;
+const employer = experience ? await getExperience(lang, experience) : undefined;
+const { Content } = await render(project);
+
+const facts = [
+  { label: t(lang, 'project.role'), value: role },
+  { label: t(lang, 'project.period'), value: formatPeriod(lang, startDate, endDate) },
+  employer && {
+    label: t(lang, 'project.experience'),
+    value: `${employer.data.organization} · ${employer.data.title}`,
+  },
+  confidential && clientIndustry && {
+    label: t(lang, 'project.client'),
+    value: lang === 'en' ? `${clientIndustry} ${t(lang, 'project.clientSuffix')}` : `${clientIndustry}${t(lang, 'project.clientSuffix')}`,
+  },
+].filter((fact) => !!fact);
+const links = [
+  github && { href: github, label: t(lang, 'project.github') },
+  demo && { href: demo, label: t(lang, 'project.demo') },
+].filter((link) => !!link);
+---
+
+<BaseLayout lang={lang} title={title} description={summary}>
+  <a href={localePath(lang, 'projects')} class="text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+    ← {t(lang, 'project.back')}
+  </a>
+
+  <header class="mt-6">
+    {
+      confidential && (
+        <span class="rounded bg-amber-100 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+          {t(lang, 'project.confidential')}
+        </span>
+      )
+    }
+    <h1 class="mt-2 text-3xl font-bold text-zinc-900 dark:text-zinc-100">{title}</h1>
+    <p class="mt-3 text-lg text-zinc-600 dark:text-zinc-400">{summary}</p>
+  </header>
+
+  {cover && <Image src={cover} alt="" class="mt-8 w-full rounded-xl border border-zinc-200 dark:border-zinc-800" />}
+
+  <dl class="mt-8 grid gap-4 sm:grid-cols-2">
+    {
+      facts.map(({ label, value }) => (
+        <div>
+          <dt class="text-xs text-zinc-500 uppercase">{label}</dt>
+          <dd class="mt-1 text-zinc-900 dark:text-zinc-100">{value}</dd>
+        </div>
+      ))
+    }
+    <div class="sm:col-span-2">
+      <dt class="text-xs text-zinc-500 uppercase">{t(lang, 'project.tech')}</dt>
+      <dd class="mt-2"><TechTags tech={tech} /></dd>
+    </div>
+  </dl>
+
+  <section class="mt-8 rounded-xl bg-zinc-100 p-5 dark:bg-zinc-900">
+    <h2 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{t(lang, 'project.outcomes')}</h2>
+    <ul class="mt-2 list-inside list-disc text-zinc-700 dark:text-zinc-300">
+      {outcomes.map((outcome) => <li>{outcome}</li>)}
+    </ul>
+  </section>
+
+  {
+    links.length > 0 && (
+      <div class="mt-6 flex gap-3">
+        {links.map(({ href, label }) => (
+          <a
+            href={href}
+            class="rounded-md border border-zinc-300 px-4 py-2 text-sm hover:border-zinc-500 dark:border-zinc-700"
+          >
+            {label} ↗
+          </a>
+        ))}
+      </div>
+    )
+  }
+
+  <article class="prose prose-zinc mt-10 max-w-none dark:prose-invert">
+    <Content />
+  </article>
+</BaseLayout>
