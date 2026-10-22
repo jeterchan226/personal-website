@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   // Replace with the real domain once one is bound; used for canonical/hreflang URLs.
-  site: 'https://jeterchan.netlify.app',
+  site: 'https://jeterchan-web.netlify.app',
   integrations: [react()],
   i18n: {
     locales: ['zh-tw', 'en'],
