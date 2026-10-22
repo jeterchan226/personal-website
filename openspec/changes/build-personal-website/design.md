@@ -83,7 +83,7 @@ Tailwind CSS v4(`@tailwindcss/vite` plugin),樣式直接寫在元件 class 上;�
 
 ## Migration Plan
 
-全新網站,無遷移。上線步驟:建立 Netlify site 連 GitHub repo → 設定 build 指令 → 開啟 Forms 通知 → 建立 Cloudflare Web Analytics site,把 token 設為環境變數 `PUBLIC_CF_ANALYTICS_TOKEN`。回滾:Netlify 後台一鍵回到上一個 deploy。
+全新網站,無遷移。上線步驟:建立 Netlify site 連 GitHub repo → 設定 build 指令 → 開啟 Forms 通知 → 建立 Cloudflare Web Analytics site,把 token 寫入 `src/config/site.ts`(token 公開於 HTML,非秘密;Netlify site 在另一帳號,無法以工具設定環境變數),只在 production build 載入。回滾:Netlify 後台一鍵回到上一個 deploy。
 
 ## Open Questions
 

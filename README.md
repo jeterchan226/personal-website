@@ -35,15 +35,15 @@ build 會擋下以下錯誤(訊息會指出檔案):
 
 其他要替換的東西:
 
-- `src/config/site.ts`:名字、email、LinkedIn、GitHub
+- `src/config/site.ts`:名字、email、LinkedIn、GitHub、Cloudflare Analytics token
 - `src/assets/photo.svg`:照片(換成 `.jpg`/`.png` 時,一併改 `about.md` 的 `photo`)
 - `public/resume/resume-zh-tw.pdf`、`resume-en.pdf`:履歷
 - `astro.config.mjs` 的 `site`:正式網址
 
 ## 部署(第一次)
 
-1. 在 Netlify 建立 site,連到這個 GitHub repo。build 設定會自動讀 `netlify.toml`。
+1. 在 Netlify 建立 site(目前為 `jeterchan-web.netlify.app`),連到這個 GitHub repo。build 設定會自動讀 `netlify.toml`。
 2. Netlify 後台 → Forms → 開啟表單偵測,並在 Form notifications 設定 email 通知。
-3. Cloudflare Web Analytics 建立網站,把 token 設成 Netlify 環境變數 `PUBLIC_CF_ANALYTICS_TOKEN`,重新部署。
+3. Cloudflare Web Analytics 的 token 寫在 `src/config/site.ts` 的 `cfAnalyticsToken`(token 本來就會出現在網頁 HTML,不是秘密)。
 
 之後 push 到 `master` 就會自動部署;build 失敗時,線上網站維持上一版。

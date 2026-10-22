@@ -24,7 +24,7 @@
 ## 4. 版面框架
 
 - [x] 4.1 `src/styles/global.css`:引入 Tailwind、設定 `dark` variant 綁定 `data-theme`、基本色票與字型
-- [x] 4.2 `BaseLayout.astro`:title、description、hreflang、主題初始化 inline script、Cloudflare Analytics script(讀 `PUBLIC_CF_ANALYTICS_TOKEN`,未設定則不載入)
+- [x] 4.2 `BaseLayout.astro`:title、description、hreflang、主題初始化 inline script、Cloudflare Analytics script(token 取自 `src/config/site.ts`,只在 production build 載入)
 - [x] 4.3 `Header.astro`(導覽 + 語言切換)、`Footer.astro`
 - [x] 4.4 `ThemeToggle.tsx` React island
 
@@ -54,5 +54,5 @@
 - [x] 8.1 `astro check`、`vitest run`、`astro build` 全部通過
 - [x] 8.2 手動測試:刪掉一個英文 Project 檔,確認 build 失敗且訊息清楚;還原
 - [x] 8.3 本機預覽檢查所有頁面中英版、深色模式、Tech 篩選、停用 JavaScript 時列表完整
-- [ ] 8.4 建立 Netlify site 並部署(預設子網域),開啟 Forms email 通知
-- [ ] 8.5 建立 Cloudflare Web Analytics,設定 `PUBLIC_CF_ANALYTICS_TOKEN`,重新部署並確認有紀錄
+- [ ] 8.4 建立 Netlify site 並部署(預設子網域 `jeterchan-web.netlify.app`),開啟 Forms email 通知
+- [ ] 8.5 建立 Cloudflare Web Analytics,token 寫入 `src/config/site.ts`,重新部署並確認有紀錄

@@ -17,7 +17,8 @@ const { lang, title, description } = Astro.props;
 const pageTitle = title ? `${title} | ${SITE.name}` : SITE.name;
 const pathname = Astro.url.pathname;
 const alternate = (target: Lang) => new URL(switchLang(pathname, target), Astro.site).href;
-const analyticsToken = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN;
+// Only production builds report traffic, so local dev and preview don't skew the numbers.
+const analyticsToken = import.meta.env.PROD ? SITE.cfAnalyticsToken : undefined;
 ---
 
 <!doctype html>
